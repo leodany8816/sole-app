@@ -16,6 +16,16 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('title', 75);
+            $table->string('subtitle', 250)->nullable();
+            $table->string('language', 35);
+            $table->smallInteger('page')->default(0);
+            $table->date('published');
+            $table->text('description')->fulltext();
+            $table->unsignedBigInteger('genre_id')->nullable();
+            $table->foreign('genre_id')->references('id')->on('genres')->onDelete('set null');
+            $table->unsignedBigInteger('publisher_id')->nullable();
+            $table->foreign('publisher_id')->references('id')->on('publishers')->onDelete('set null');
         });
     }
 

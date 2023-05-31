@@ -16,6 +16,12 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('career', 75);
+            $table->text('biography')->fulltext();
+            $table->string('website', 75)->nullable();
+            $table->string('email', 75)->nullable();
+            $table->unsignedBigInteger('author_id');
+            $table->foreign('author_id')->references('id')->on('authors')->onDelete('cascade');
         });
     }
 

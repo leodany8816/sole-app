@@ -16,6 +16,11 @@ return new class extends Migration
         Schema::create('publishers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('name', 75);
+            $table->string('country', 250)->nullable();
+            $table->string('website', 75)->nullable();
+            $table->string('email', 75)->nullable();
+            $table->text('description')->nullable();
         });
     }
 

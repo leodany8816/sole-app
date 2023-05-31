@@ -16,6 +16,12 @@ return new class extends Migration
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->text('description')->fulltext();
+            $table->dateTime('writing_date');
+            $table->unsignedBigInteger('noteable_id');
+            $table->string('noteable_type');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 

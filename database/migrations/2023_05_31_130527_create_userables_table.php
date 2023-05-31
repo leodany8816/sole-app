@@ -15,6 +15,11 @@ return new class extends Migration
     {
         Schema::create('userables', function (Blueprint $table) {
             $table->id();
+            $table->enum('number_star', [1, 2, 3, 4, 5]);
+            $table->unsignedBigInteger('userable_id');
+            $table->string('userable_type');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
