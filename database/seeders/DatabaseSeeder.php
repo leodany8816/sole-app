@@ -11,6 +11,7 @@ use App\Models\Profile;
 use App\Models\Image;
 use App\Models\Note;
 use App\Models\User;
+use App\Models\Genre;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(GenreSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(PublisherSeeder::class);
 
         Publisher::factory(5)->create();
 
@@ -44,6 +46,8 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->hasAttached(Author::factory()->count(2), ['number_star' => rand(1,5)])->create();
         User::factory()->hasAttached(Book::factory()->count(2), ['number_star'=> rand(1,5)])->create();
+
+        Genre::factory(5)->create();
 
 
         // \App\Models\User::factory(10)->create();
