@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Author;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class AuthorController extends Controller
 {
@@ -33,7 +35,13 @@ class AuthorController extends Controller
             $author->full_name = $request->full_name;
             $author->birth_date = $request->birth_date;
             $author->country = $request->country;
+            $image_name = $this->loadImage($request);
             $author->save();
+            $image_name = $this->loadImage($request);
+            if ($image_name != '') {
+                $author->image()->create(['url' => 'images/' . $image_name]);
+            }
+            DB::commit();
             return response()->json(['status' => true, 'message' => 'El autor ' . $author->full_name . ' fue creado exitosamente. ']);
         } catch (\Exception $exc) {
             return response()->json(['status' => false, 'message' => 'Error al crear el registro ' . $exc]);
@@ -92,5 +100,17 @@ class AuthorController extends Controller
         } catch (\Exception $exc) {
             return response()->json(['status' => false, 'message' => 'Error al eliminar el registro ' . $exc]);
         }
+    }
+
+    public function loadImage($request)
+    {
+        $image_name = '';
+        if ($request->hasFile('image')) {
+            $destination_path = 'public/images';
+            $image = $request->file('image');
+            $image_name = time() . '_' . $image->getClientOriginalName();
+            $request->file('image')->storeAs($destination_path, $image_name);
+        }
+        return $image_name;
     }
 }
