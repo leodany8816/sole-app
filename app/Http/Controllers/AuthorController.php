@@ -48,7 +48,8 @@ class AuthorController extends Controller
      */
     public function show($id)
     {
-        $author = Author::find($id);
+        //$author = Author::find($id);
+        $author = Author::with(['profile'])->where('id', '=', $id)->first();
         return response()->json($author);
     }
 

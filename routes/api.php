@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\AuthorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Routing\Router;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,5 +28,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/authors/{id}', 'show');
         Route::put('/authors/{id}', 'update');
         Route::delete('/authors/{id}', 'destroy');
+    });
+
+    Route::controller(ProfileController::class)->group(function (){
+        Route::post('/profiles', 'store');
+        Route::put('/profiles/{id}', 'update');
     });
 });
