@@ -58,7 +58,13 @@ class AuthorController extends Controller
     {
         //$author = Author::find($id);
         $author = Author::with(['profile'])->where('id', '=', $id)->first();
-        return response()->json($author);
+
+        $image = null;
+        if ($author->image) {
+            $image = Storage::url($author->image['url']);
+        }
+        return response()->json(['author' => $author, 'image' => $image]);
+        //return response()->json($author);
     }
 
     /**
@@ -76,6 +82,11 @@ class AuthorController extends Controller
             $author->birth_date = $request->birth_date;
             $author->country = $request->country;
             $author->save();
+
+            $image_name = $this->loadImage($request);
+            if ($image_name != '') {
+                $author->image()->update(['url' => 'images / ' . $image_name]);
+            }
             return response()->json(['status' => true, 'message' => 'El author ' . $author->full_name . ' fue actualizado correctamente']);
         } catch (\Exception $exc) {
             return response()->json(['status' => false, 'message' => 'Error al editar el registro ' . $exc]);
