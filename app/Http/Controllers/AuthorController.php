@@ -18,8 +18,14 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $author = Author::orderBy('full_name', 'asc')->get();
-        return response()->json($author);
+        $authors = Author::orderBy('full_name', 'asc')->get();
+
+        $count = 0;
+        foreach ($authors as $author) {
+            $authors[$count]->ratings = $author->users()->select('userables.*')->get();
+            $count++;
+        }
+        return response()->json($authors);
     }
 
     /**
