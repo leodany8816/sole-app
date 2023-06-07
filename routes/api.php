@@ -24,6 +24,8 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    // Route::resource('authors', AuthorController::class); //Otra manera de crear rutas
+
     Route::controller(AuthorController::class)->group(function () {
         Route::get('/authors', 'index');
         Route::post('/authors', 'store');

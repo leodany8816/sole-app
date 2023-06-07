@@ -1,13 +1,16 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Author;
-use Exception;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Image;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\AuthorRepository;
+use GuzzleHttp\Psr7\Response;
+use App\Http\Requests\AuthorPostRequest;
 
 class AuthorController extends Controller
 {
@@ -34,23 +37,39 @@ class AuthorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    //public function store(Request $request)
+    public function store(AuthorPostRequest $request)
+    {     
+        // validacion del tutorial  
+        // $request->validate([
+        //     'full_name' => 'required|max:75',
+        //     'birth_date' => 'date|date_format:Y-m-d',
+        //     'country' => 'max:75',
+        //     'image' => 'nullable|sometimes|image',
+        // ]);
+        // DB::beginTransaction();
+
+        /**
+         * Validacion con Form Request Validation
+         */
+        $validated = $request->validated();
+        // $validated = $request->safe()->only(['full_name']);
+        // $validated = $request->safe()->except(['full_name']);        
         try {
             $author = new Author();
             $author->full_name = $request->full_name;
             $author->birth_date = $request->birth_date;
             $author->country = $request->country;
-            $image_name = $this->loadImage($request);
             $author->save();
             $image_name = $this->loadImage($request);
             if ($image_name != '') {
                 $author->image()->create(['url' => 'images/' . $image_name]);
             }
             DB::commit();
-            return response()->json(['status' => true, 'message' => 'El autor ' . $author->full_name . ' fue creado exitosamente. ']);
+            return response()->json(['status' => true, 'message' => 'El autor ' . $author->full_name . ' fue creado exitosamente']);
         } catch (\Exception $exc) {
-            return response()->json(['status' => false, 'message' => 'Error al crear el registro ' . $exc]);
+            DB::rollBack();
+            return response()->json(['status' => false, 'message' => 'Error al crear el registro']);
         }
     }
 
@@ -82,6 +101,12 @@ class AuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'full_name' => 'required|max:75',
+            'birth_date' => 'date|date_format:Y-m-d',
+            'country' => 'max:75',
+            'image' => 'nullable|sometimes|image',
+        ]);
         try {
             $author = Author::findOrFail($id);
             $author->full_name = $request->full_name;

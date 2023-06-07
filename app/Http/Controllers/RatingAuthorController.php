@@ -25,6 +25,11 @@ class RatingAuthorController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'number_star' => 'required|integer',
+            'author.id' => 'required|integer|exists:authors,id',
+            'user.id' => 'required|integer|exists:users,id',
+            ]);
         try {
             $author = Author::findOrFail($request->author['id']);
             $author->users()->attach($request->user['id'], ['number_star' => $request->number_star]);
@@ -57,6 +62,11 @@ class RatingAuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'number_star' => 'required|integer',
+            'author.id' => 'required|integer|exists:authors,id',
+            'user.id' => 'required|integer|exists:users,id',
+            ]);
         try {
             $author = Author::findOrFail($request->author['id']);
             $author->users()->updateExistingPivot($request->user['id'],['number_star' => $request->number_star]);

@@ -28,6 +28,12 @@ class NoteAuthorController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'description' => 'required|min:5',
+            'writing_date' => 'date|date_format:Y-m-d',
+            'author.id' => 'required|integer|exists:authors,id',
+            'user.id' => 'required|integer|exists:users,id',
+            ]);
         try {
             $author = Author::findOrFail($request->author['id']);
             $author->note()->create(['description' => $request->description, 'writing_date' => $request->writing_date, 'user_id' => $request->user['id']]);
@@ -58,6 +64,12 @@ class NoteAuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'description' => 'required|min:5',
+            'writing_date' => 'date|date_format:Y-m-d',
+            'author.id' => 'required|integer|exists:authors,id',
+            'user.id' => 'required|integer|exists:users,id',
+            ]);
         try {
             $note = Note::findOrFail($id);
             $note->description = $request->description;
