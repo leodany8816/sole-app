@@ -6,6 +6,9 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NoteAuthorController;
 use App\Http\Controllers\RatingAuthorController;
+use App\Http\Controllers\GenreController;
+use App\Http\Controllers\PublisherController;
+use App\Http\Controllers\BookController;
 use Illuminate\Routing\Router;
 
 /*
@@ -46,10 +49,33 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/authors/notes/{id}', 'destroy');
     });
 
-    Route::controller(RatingAuthorController::class)->group(function (){
+    Route::controller(RatingAuthorController::class)->group(function () {
         Route::post('/authors/ratings', 'store');
         Route::get('/authors/{id}/ratings', 'show');
         Route::put('/authors/ratings/{id}', 'update');
     });
 
+    Route::controller(GenreController::class)->group(function () {
+        Route::get('/genres', 'index');
+        Route::post('/genres', 'store');
+        Route::get('/genres/{id}', 'show');
+        Route::put('/genres/{id}', 'update');
+        Route::delete('/genres/{id}', 'destroy');
+    });
+
+    Route::controller(PublisherController::class)->group(function () {
+        Route::get('/publishers', 'index');
+        Route::post('/publishers', 'store');
+        Route::get('/publishers/{id}', 'show');
+        Route::put('/publishers/{id}', 'update');
+        Route::delete('/publishers/{id}', 'destroy');
+    });
+
+    Route::controller(BookController::class)->group(function () {
+        Route::get('/books', 'index');
+        Route::post('/books', 'store');
+        Route::get('/books/{id}', 'show');
+        Route::put('/books/{id}', 'update');
+        Route::delete('/books/{id}', 'destroy');
+    });
 });
