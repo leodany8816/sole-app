@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\AuthorRepository;
 use GuzzleHttp\Psr7\Response;
-use App\Http\Requests\AuthorPostRequest;
+// use App\Http\Requests\AuthorPostRequest;
 
 class AuthorController extends Controller
 {
@@ -21,7 +21,7 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $authors = Author::orderBy('full_name', 'asc')->get();
+        $authors = Author::orderBy('id', 'desc')->get();
 
         $count = 0;
         foreach ($authors as $author) {
@@ -37,22 +37,22 @@ class AuthorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    //public function store(Request $request)
-    public function store(AuthorPostRequest $request)
-    {     
+    public function store(Request $request)
+    //public function store(AuthorPostRequest $request)
+    {
         // validacion del tutorial  
-        // $request->validate([
-        //     'full_name' => 'required|max:75',
-        //     'birth_date' => 'date|date_format:Y-m-d',
-        //     'country' => 'max:75',
-        //     'image' => 'nullable|sometimes|image',
-        // ]);
+        $request->validate([
+            'full_name' => 'required|max:75|unique:authors,full_name',
+            'birth_date' => 'date|date_format:Y-m-d',
+            'country' => 'required|max:75',
+            'image' => 'nullable|sometimes|image',
+        ]);
         // DB::beginTransaction();
 
         /**
          * Validacion con Form Request Validation
          */
-        $validated = $request->validated();
+        //$validated = $request->validated();
         // $validated = $request->safe()->only(['full_name']);
         // $validated = $request->safe()->except(['full_name']);        
         try {
@@ -113,14 +113,17 @@ class AuthorController extends Controller
             $author->birth_date = $request->birth_date;
             $author->country = $request->country;
             $author->save();
-
             $image_name = $this->loadImage($request);
             if ($image_name != '') {
-                $author->image()->update(['url' => 'images / ' . $image_name]);
+                if ($author->image != null) {
+                    $author->image()->update(['url' => 'images/' . $image_name]);
+                } else {
+                    $author->image()->create(['url' => 'images/' . $image_name]);
+                }
             }
-            return response()->json(['status' => true, 'message' => 'El author ' . $author->full_name . ' fue actualizado correctamente']);
+            return response()->json(['status' => true, 'message' => 'El autor ' . $author->full_name . ' fue actualizado exitosamente']);
         } catch (\Exception $exc) {
-            return response()->json(['status' => false, 'message' => 'Error al editar el registro ' . $exc]);
+            return response()->json(['status' => false, 'message' => 'Error al editar el registro' . $exc]);
         }
     }
 
@@ -138,7 +141,7 @@ class AuthorController extends Controller
             if ($author->image()) {
                 $author->image()->delete();
             }
-            return response()->json(['status' => true, 'message' => 'Elautor ' . $author->full_name . ' fue eliminado exitosamente']);
+            return response()->json(['status' => true, 'message' => 'El autor ' . $author->full_name . ' fue eliminado exitosamente']);
         } catch (\Exception $exc) {
             return response()->json(['status' => false, 'message' => 'Error al eliminar el registro ' . $exc]);
         }
