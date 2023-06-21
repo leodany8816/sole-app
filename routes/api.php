@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/authors/{id}/notes', 'index');
         Route::post('/authors/notes', 'store');
         Route::put('/authors/notes/{id}', 'update');
+        Route::get('/authors/notes/{id}', 'show');
         Route::delete('/authors/notes/{id}', 'destroy');
     });
 

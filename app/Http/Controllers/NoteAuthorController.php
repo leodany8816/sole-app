@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Author;
 use App\Models\Note;
-
+use App\Repositories\AuthorRepository;
 use Illuminate\Http\Request;
 
 class NoteAuthorController extends Controller
@@ -13,10 +13,12 @@ class NoteAuthorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+  
     public function index($id)
     {
         $author = Author::findOrFail($id);
-        return response()->json(['author' => $author, 'notes' => $author->note()->where('user_id', '=', auth()->user()->id)->get()]);
+        return response()->json(['author' => $author, 'notes' => $author->note()->where('user_id', '=', auth()->user()->id)->orderBy('id', 'desc')->get()]);
 
     }
 
@@ -52,7 +54,10 @@ class NoteAuthorController extends Controller
      */
     public function show($id)
     {
-        //
+        
+        $note = Note::find($id);
+        //$this->authorize('MyNote', $note);
+        return response()->json($note);
     }
 
     /**
@@ -66,7 +71,6 @@ class NoteAuthorController extends Controller
     {
         $validated = $request->validate([
             'description' => 'required|min:5',
-            'writing_date' => 'date|date_format:Y-m-d',
             'author.id' => 'required|integer|exists:authors,id',
             'user.id' => 'required|integer|exists:users,id',
             ]);
