@@ -9,6 +9,7 @@ use App\Http\Controllers\RatingAuthorController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\NoteBookController;
 use Illuminate\Routing\Router;
 
 /*
@@ -56,10 +57,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/authors/ratings/{id}', 'update');
     });
 
+    Route::controller(NoteBookController::class)->group(function (){
+        Route::get('/books/{id}/notes', 'index');
+        Route::post('/books/notes', 'store');
+        Route::put('/books/notes/{id}', 'update');
+        Route::get('/books/notes/{id}', 'show');
+        Route::delete('/books/notes/{id}', 'destroy');
+    });
+
     Route::controller(GenreController::class)->group(function () {
         Route::get('/genres', 'index');
         Route::post('/genres', 'store');
         Route::get('/genres/{id}', 'show');
+        //Route::get('/genres/{id}', [NoteBookController::class, 'show'])->name('books.notes.show');
         Route::put('/genres/{id}', 'update');
         Route::delete('/genres/{id}', 'destroy');
     });

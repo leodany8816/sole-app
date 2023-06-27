@@ -19,7 +19,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::with(['genre', 'publisher', 'authors'])->orderBy('title', 'asc')->get();
+        $books = Book::with(['genre', 'publisher', 'authors'])->orderBy('id', 'desc')->get();
         $count = 0;
         foreach ($books as $book) {
             $books[$count]->ratings = $book->users()->select('userables.*')->get();
@@ -39,7 +39,7 @@ class BookController extends Controller
         $validated = $request->validate([
             'title' => 'required|max:75|unique:books',
             'subtitle' => 'min:3|max:250',
-            'language' => 'min:3|max:35',
+            'language' => 'required',
             'page' => 'integer|digits_between:2,4',
             'published' => 'date|date_format:Y-m-d',
             'genre_id' => 'required|integer|exists:genres,id',
