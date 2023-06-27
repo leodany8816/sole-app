@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NoteAuthorController;
 use App\Http\Controllers\RatingAuthorController;
+use App\Http\Controllers\RatingBookController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\BookController;
@@ -57,12 +58,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/authors/ratings/{id}', 'update');
     });
 
-    Route::controller(NoteBookController::class)->group(function (){
+    Route::controller(NoteBookController::class)->group(function () {
         Route::get('/books/{id}/notes', 'index');
         Route::post('/books/notes', 'store');
         Route::put('/books/notes/{id}', 'update');
         Route::get('/books/notes/{id}', 'show');
         Route::delete('/books/notes/{id}', 'destroy');
+    });
+
+    Route::controller(RatingBookController::class)->group(function () {
+        Route::post('/books/ratings', 'store');
+        Route::get('/books/{id}/ratings', 'show');
+        Route::put('/books/ratings/{id}', 'update');
     });
 
     Route::controller(GenreController::class)->group(function () {
