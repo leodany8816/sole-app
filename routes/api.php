@@ -50,6 +50,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/authors/notes/{id}', 'update');
         Route::get('/authors/notes/{id}', 'show');
         Route::delete('/authors/notes/{id}', 'destroy');
+        Route::get('/authors/{id}/notes/generatepdf', 'generatePDF');
+        Route::get('/authors/{id}/notes/generateexcel', 'generateExcel');
     });
 
     Route::controller(RatingAuthorController::class)->group(function () {
