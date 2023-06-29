@@ -114,20 +114,29 @@ class NoteAuthorController extends Controller
 
     public function generatePDF($id)
     {
-        $author = Author::findOrFail($id);
-        $data = [
-            'author' => $author, 'notes' => $author->note()->where(
-                'user_id',
-                '=',
-                auth()->user()->id
-            )->get()
-        ];
+        // $author = Author::findOrFail($id);
+        // $data = [
+        //     'author' => $author, 'notes' => $author->note()->where(
+        //         'user_id',
+        //         '=',
+        //         auth()->user()->id
+        //     )->get()
+        // ];
+        $data = $this->authors->getAuthorNotes($id);
         $pdf = PDF::loadView('authors.notes.pdf', $data);
         return $pdf->stream();
     }
 
     public function generateExcel($id)
     {
+        // $author = Author::findOrFail($id);
+        // $data = [
+        //     'author' => $author,
+        //     'notes' => $author->note()->where('user_id', '=', auth()->user()->id)->get()
+        // ];
+        // return Excel::download(new ExcelNotes($data), 'NotasDeAutor.xlsx');
+
+        // ejemplo de  dependencias e iyeccion
         $data = $this->authors->getAuthorNotes($id);
         return Excel::download(new ExcelNotes($data), 'NotasDeAutor.xlsx');
     }

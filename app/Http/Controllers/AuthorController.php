@@ -14,6 +14,12 @@ use GuzzleHttp\Psr7\Response;
 
 class AuthorController extends Controller
 {
+    protected $authors;
+
+    public function __construct(AuthorRepository $authors)
+    {
+        $this->authors = $authors;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -21,14 +27,17 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $authors = Author::orderBy('id', 'desc')->get();
+        // $authors = Author::orderBy('id', 'desc')->get();
 
-        $count = 0;
-        foreach ($authors as $author) {
-            $authors[$count]->ratings = $author->users()->select('userables.*')->get();
-            $count++;
-        }
-        return response()->json($authors);
+        // $count = 0;
+        // foreach ($authors as $author) {
+        //     $authors[$count]->ratings = $author->users()->select('userables.*')->get();
+        //     $count++;
+        // }
+        // return response()->json($authors);
+
+        // ejemplo de dependencias e iyeccion de codigo
+        return response()->json($this->authors->getAuthorsRatings());
     }
 
     /**
