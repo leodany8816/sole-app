@@ -66,7 +66,7 @@ class NoteAuthorController extends Controller
     {
 
         $note = Note::find($id);
-        //$this->authorize('MyNote', $note);
+        $this->authorize('MyNote', $note);
         return response()->json($note);
     }
 
