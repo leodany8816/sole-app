@@ -58,7 +58,7 @@ class BookController extends Controller
             $book->description = $request->description;
             $book->genre_id = $request->genre_id;
             $book->publisher_id = $request->publisher_id;
-            $book->save();
+            //$book->save();
             foreach ($request->authors as $author) {
                 $book->authors()->attach($author);
             }
@@ -75,7 +75,7 @@ class BookController extends Controller
             return response()->json(['status' => true, 'message' => 'El Libro ' . $book->title . ' fue creado exitosamente' ]);
         } catch (\Exception $exc){
             DB::rollBack();
-            return response()->json(['status' => false, 'message' => 'Error al crear el registro']);
+            return response()->json(['status' => false, 'message' => 'Error al crear el registro'.$exc]);
         }
     }
 
