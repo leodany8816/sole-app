@@ -58,7 +58,7 @@ class BookController extends Controller
             $book->description = $request->description;
             $book->genre_id = $request->genre_id;
             $book->publisher_id = $request->publisher_id;
-            //$book->save();
+            $book->save();
             foreach ($request->authors as $author) {
                 $book->authors()->attach($author);
             }
