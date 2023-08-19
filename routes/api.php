@@ -96,6 +96,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/books', 'store');
         Route::get('/books/generatebookpdf', 'generateBookPDF');
         Route::get('/books/generatebookpdfraiting', 'generateBookPDFRaiting');
+        Route::get('/books/generateExcel', 'generateExcel');
+        Route::get('/books/generateExcelRaitings', 'generateExcelRaitings');
         Route::get('/books/{id}', 'show');
         Route::put('/books/{id}', 'update');
         Route::delete('/books/{id}', 'destroy');

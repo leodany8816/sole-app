@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Mail\NewBookNotification;
+Use App\Repositories\Exports\ExcelBooks;
+Use App\Repositories\Exports\ExcelBooksRaitings;
 use App\Repositories\BookRepository;
 
 class BookController extends Controller
@@ -186,6 +188,7 @@ class BookController extends Controller
         return $image_name;
     }
 
+    //funcion para crear los pdf´s
     public function generateBookPDF(){
         $data = $this->books->getBooks();
         $pdf = PDF::loadView('books.pdf', $data);
@@ -204,6 +207,17 @@ class BookController extends Controller
 
         //print_r($data);
         //return response()->json($data);
+    }
+
+    //funcones para crear los archivos de excel
+    public function generateExcel(){
+        $data =  $this->books->getBooks();
+        return Excel::download(new ExcelBooks($data), 'Libros.xlsx');
+    }
+
+    public function generateExcelRaitings(){
+        $data = $this->books->getBooksRatings();
+        return Excel::download(new ExcelBooksRaitings($data), 'LibrosRaitings.xlsx');
     }
 
 }
