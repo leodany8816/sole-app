@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use PDF;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Mail\NewBookNotification;
+use App\Repositories\BookRepository;
 
 class BookController extends Controller
 {
@@ -17,6 +20,13 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
+    protected $books;
+
+    public function __construct(BookRepository $books){
+        $this->books = $books;
+    }
+
     public function index()
     {
         $books = Book::with(['genre', 'publisher', 'authors'])->orderBy('id', 'desc')->get();
@@ -87,6 +97,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
+        echo "entra";
         $book = Book::with(['genre', 'publisher', 'authors'])->where('id', '=', $id)->first();
         $image = null;
         if($book->image){
@@ -174,4 +185,25 @@ class BookController extends Controller
         }
         return $image_name;
     }
+
+    public function generateBookPDF(){
+        $data = $this->books->getBooks();
+        $pdf = PDF::loadView('books.pdf', $data);
+        return $pdf->stream();
+    }
+
+    public function generateBookPDFRaiting(){
+        $data = $this->books->getBooksRatings();
+        $pdf = PDF::loadView('books.booksRaitings.pdf', $data);
+        return $pdf->stream();
+        
+        /*foreach($data as $data1){
+            echo $data1[1]['ratings']."<br>";
+            echo "aver->".$data1[1]['ratings'][0]['number_star'];
+        }*/
+
+        //print_r($data);
+        //return response()->json($data);
+    }
+
 }
