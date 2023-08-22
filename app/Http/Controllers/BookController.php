@@ -99,7 +99,6 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        echo "entra";
         $book = Book::with(['genre', 'publisher', 'authors'])->where('id', '=', $id)->first();
         $image = null;
         if($book->image){
@@ -168,11 +167,14 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
+        DB::beginTransaction();
         try{
             $book = Book::findOrFail($id);
             $book->delete();
+            DB::commit();
             return response()->json(['status' => true, 'message' => 'El libro ' . $book->title . ' fue eliminado exitosamente' ]);
         } catch (\Exception $exc){
+            DB::rollBack();
             return response()->json(['status' => false, 'message' => 'Error al eliminar el registro']);
         }
     }

@@ -67,7 +67,8 @@ class AuthorController extends Controller
          */
         //$validated = $request->validated();
         // $validated = $request->safe()->only(['full_name']);
-        // $validated = $request->safe()->except(['full_name']);        
+        // $validated = $request->safe()->except(['full_name']); 
+        DB::beginTransaction();       
         try {
             $author = new Author();
             $author->full_name = $request->full_name;
@@ -120,6 +121,7 @@ class AuthorController extends Controller
             'country' => 'max:75',
             'image' => 'nullable|sometimes|image',
         ]);
+        DB::beginTransaction();
         try {
             $author = Author::findOrFail($id);
             $author->full_name = $request->full_name;
@@ -134,8 +136,10 @@ class AuthorController extends Controller
                     $author->image()->create(['url' => 'images/' . $image_name]);
                 }
             }
+            DB::commit();
             return response()->json(['status' => true, 'message' => 'El autor ' . $author->full_name . ' fue actualizado exitosamente']);
         } catch (\Exception $exc) {
+            DB::rollBack();
             return response()->json(['status' => false, 'message' => 'Error al editar el registro' . $exc]);
         }
     }
@@ -148,14 +152,17 @@ class AuthorController extends Controller
      */
     public function destroy($id)
     {
+        DB::beginTransaction();
         try {
             $author = Author::findOrFail($id);
             $author->delete();
             if ($author->image()) {
                 $author->image()->delete();
             }
+            DB::commit();
             return response()->json(['status' => true, 'message' => 'El autor ' . $author->full_name . ' fue eliminado exitosamente']);
         } catch (\Exception $exc) {
+            DB::rollBack();
             return response()->json(['status' => false, 'message' => 'Error al eliminar el registro ' . $exc]);
         }
     }

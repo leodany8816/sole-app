@@ -8,6 +8,8 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 Use App\Models\Author;
 Use App\Observers\AuthorObserver;
+Use App\Models\Book;
+Use App\Observers\BookObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Author::observe(AuthorObserver::class);
+        Book::observe(BookObserver::class);
         // Book::observe(BookObserver::class);
     }
 
