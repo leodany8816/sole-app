@@ -24,4 +24,12 @@ class AuthorRepository
         ];
         return $data;
     }
+
+    public function getAuthor(){
+        $authors = Author::orderBy('id', 'desc')->get();
+        $data = [
+            'authors' => $authors
+        ];
+        return $data;
+    }
 }

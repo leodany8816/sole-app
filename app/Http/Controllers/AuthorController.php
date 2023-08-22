@@ -6,10 +6,14 @@ namespace App\Http\Controllers;
 use App\Models\Author;
 use App\Models\Image;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use PDF;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\AuthorRepository;
 use GuzzleHttp\Psr7\Response;
+Use App\Repositories\Exports\ExcelAuthors;
+Use App\Repositories\Exports\ExcelAuthorsRaitings;
 // use App\Http\Requests\AuthorPostRequest;
 
 class AuthorController extends Controller
@@ -166,5 +170,39 @@ class AuthorController extends Controller
             $request->file('image')->storeAs($destination_path, $image_name);
         }
         return $image_name;
+    }
+
+    /*
+    *Funcion para crear el pdf de autores y autores con raitings
+     */
+    public function generateAutorPDF(){
+        $data = $this->authors->getAuthor();
+        $pdf = PDF::loadView('authors.pdf', $data);
+        return $pdf->stream();
+    }
+
+    public function generateAutorPDFRaiting(){
+        $authors = $this->authors->getAuthorsRatings();
+        $data = [
+            "authors" => $authors
+        ];
+        $pdf = PDF::loadView('authors.authorsRaitings.pdf', $data);
+        return $pdf->stream();
+    }
+
+    /**
+     * funciones para crear el excel de los autores y autores con raitings
+     */
+    public function generateExcel(){
+        $data =  $this->authors->getAuthor();
+        return Excel::download(new ExcelAuthors($data), 'Autores.xlsx');
+    }
+
+    public function generateExcelRaitings(){
+        $authors = $this->authors->getAuthorsRatings();
+        $data = [
+           "authors" => $authors   
+        ];
+        return Excel::download(new ExcelAuthorsRaitings($data), 'AutoresRaitings.xlsx');
     }
 }

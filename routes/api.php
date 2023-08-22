@@ -34,6 +34,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(AuthorController::class)->group(function () {
         Route::get('/authors', 'index');
         Route::post('/authors', 'store');
+        Route::get('/authors/generateAutorPDF', 'generateAutorPDF');
+        Route::get('/authors/generateAutorPDFRaiting', 'generateAutorPDFRaiting');
+        Route::get('/authors/generateExcel', 'generateExcel');
+        Route::get('/authors/generateExcelRaitings', 'generateExcelRaitings');
         Route::get('/authors/{id}', 'show');
         Route::put('/authors/{id}', 'update');
         Route::delete('/authors/{id}', 'destroy');
